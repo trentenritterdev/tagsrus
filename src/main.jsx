@@ -168,7 +168,7 @@ function Checkout() { const [qty, setQty] = useState(1); const navigate = useNav
 function Dashboard() {
   const { user } = useAuth(); const navigate = useNavigate();
   const [tags, setTags] = useState([]); const [showAdd, setShowAdd] = useState(false); const [code, setCode] = useState('');
-  const [notice, setNotice] = useState(''); const [error, setError] = useState(''); const [busy, setBusy] = useState(false); const [loading, setLoading] = useState(true);
+  const [notice, setNotice] = useState(''); const [error, setError] = useState(''); const [busy, setBusy] = useState(false); const [unregisteringId, setUnregisteringId] = useState(''); const [loading, setLoading] = useState(true);
   const client = requireSupabase();
   async function loadTags() {
     setLoading(true); setError('');
@@ -187,6 +187,16 @@ function Dashboard() {
     if (updateError) setError(readableError(updateError));
     else { setNotice(status === 'active' ? 'Tag reactivated.' : 'Tag deactivated. Its public profile is no longer available.'); await loadTags(); }
   }
+  async function unregisterTag(tag) {
+    if (!window.confirm(`Unregister ${tag.name}? This removes the tag and its profile from your account. Its activation code can be connected again.`)) return;
+    setUnregisteringId(tag.id); setError(''); setNotice('');
+    try {
+      const { error: unregisterError } = await client.rpc('unregister_tagsrus_tag', { p_tag_id: tag.id });
+      if (unregisterError) setError(readableError(unregisterError));
+      else { setNotice('Tag unregistered. Its activation code is available to connect again.'); await loadTags(); }
+    } catch (unregisterError) { setError(readableError(unregisterError)); }
+    finally { setUnregisteringId(''); }
+  }
   async function claimTag(e) {
     e.preventDefault(); setBusy(true); setError(''); setNotice('');
     const { data: claimData, error: claimError } = await client.rpc('claim_tagsrus_tag', { p_code: code });
@@ -194,10 +204,10 @@ function Dashboard() {
     else { const claimed = Array.isArray(claimData) ? claimData[0] : claimData; setShowAdd(false); setCode(''); setNotice('Tag connected to your account.'); await loadTags(); if (claimed?.profile_id) navigate(`/dashboard/profiles/${claimed.profile_id}/setup`); }
     setBusy(false);
   }
-  return <div className="dashboard-page"><div className="dashboard-nav"><Container><Logo /><div className="dashboard-nav-actions"><span className="user-chip">{(user.user_metadata?.full_name || user.email || 'U').slice(0, 1).toUpperCase()}</span><span className="user-name">{user.user_metadata?.full_name || user.email}</span><AdminLink /><button className="text-link" onClick={signOut}>Sign out</button></div></Container></div><main><Container className="dashboard-main"><div className="dashboard-heading"><div><p className="eyebrow">Your account</p><h1>My tags</h1><p>Manage your tags and the information they share.</p></div><button className="button" onClick={() => setShowAdd(true)}>{icons.plus} Add a tag</button></div>{notice && <div className="notice" role="status">{icons.check}<span>{notice}</span><button onClick={() => setNotice('')}>×</button></div>}{error && <div className="form-error" role="alert">{error}</div>}{loading ? <p>Loading your tags…</p> : <div className="dashboard-grid">{tags.map(tag => <TagRow key={tag.id} tag={tag} onToggle={() => toggleTag(tag)} />)}{!tags.length && <div className="notice">No tags are connected yet. Add the activation code included with your tag.</div>}<button className="add-card" onClick={() => setShowAdd(true)}><span>{icons.plus}</span><strong>Add another tag</strong><small>Connect another TagsRUs product</small></button></div>}<div className="dashboard-callout"><div className="callout-icon">{icons.shield}</div><div><strong>Your information, your control.</strong><p>Only information you mark public is visible without a PIN. You can change your settings any time.</p></div>{tags[0] && <Link to={`/dashboard/profiles/${tags[0].profile_id}`}>Review profile {icons.arrow}</Link>}</div></Container></main>{showAdd && <div className="modal-backdrop" onClick={() => setShowAdd(false)}><form className="modal" onSubmit={claimTag} onClick={e => e.stopPropagation()}><button type="button" className="modal-close" onClick={() => setShowAdd(false)}>{icons.close}</button><div className="modal-icon">{icons.plus}</div><h2>Add a TagsRUs tag</h2><p>Enter the activation code printed on the back of your tag to connect it to your account.</p><label>Tag code<input value={code} onChange={e => setCode(e.target.value.toUpperCase())} required maxLength="64" autoComplete="off" placeholder="e.g. TR-4829-AX" /></label><button className="button button-full" disabled={busy}>{busy ? 'Connecting…' : 'Connect tag'} {icons.arrow}</button></form></div>}</div>;
+  return <div className="dashboard-page"><div className="dashboard-nav"><Container><Logo /><div className="dashboard-nav-actions"><span className="user-chip">{(user.user_metadata?.full_name || user.email || 'U').slice(0, 1).toUpperCase()}</span><span className="user-name">{user.user_metadata?.full_name || user.email}</span><AdminLink /><button className="text-link" onClick={signOut}>Sign out</button></div></Container></div><main><Container className="dashboard-main"><div className="dashboard-heading"><div><p className="eyebrow">Your account</p><h1>My tags</h1><p>Manage your tags and the information they share.</p></div><button className="button" onClick={() => setShowAdd(true)}>{icons.plus} Add a tag</button></div>{notice && <div className="notice" role="status">{icons.check}<span>{notice}</span><button onClick={() => setNotice('')}>×</button></div>}{error && <div className="form-error" role="alert">{error}</div>}{loading ? <p>Loading your tags…</p> : <div className="dashboard-grid">{tags.map(tag => <TagRow key={tag.id} tag={tag} onToggle={() => toggleTag(tag)} onUnregister={() => unregisterTag(tag)} unregistering={unregisteringId === tag.id} />)}{!tags.length && <div className="notice">No tags are connected yet. Add the activation code included with your tag.</div>}<button className="add-card" onClick={() => setShowAdd(true)}><span>{icons.plus}</span><strong>Add another tag</strong><small>Connect another TagsRUs product</small></button></div>}<div className="dashboard-callout"><div className="callout-icon">{icons.shield}</div><div><strong>Your information, your control.</strong><p>Only information you mark public is visible without a PIN. You can change your settings any time.</p></div>{tags[0] && <Link to={`/dashboard/profiles/${tags[0].profile_id}`}>Review profile {icons.arrow}</Link>}</div></Container></main>{showAdd && <div className="modal-backdrop" onClick={() => setShowAdd(false)}><form className="modal" onSubmit={claimTag} onClick={e => e.stopPropagation()}><button type="button" className="modal-close" onClick={() => setShowAdd(false)}>{icons.close}</button><div className="modal-icon">{icons.plus}</div><h2>Add a TagsRUs tag</h2><p>Enter the activation code printed on the back of your tag to connect it to your account.</p><label>Tag code<input value={code} onChange={e => setCode(e.target.value.toUpperCase())} required maxLength="64" autoComplete="off" placeholder="e.g. TR-4829-AX" /></label><button className="button button-full" disabled={busy}>{busy ? 'Connecting…' : 'Connect tag'} {icons.arrow}</button></form></div>}</div>;
 }
 
-function TagRow({ tag, onToggle }) { return <div className={`tag-row-card ${tag.status !== 'Active' ? 'is-inactive' : ''}`}><div className="tag-row-main"><div className="mini-tag"><span>)))</span></div><div><div className="tag-row-title"><h2>{tag.name}</h2><span className={`status ${tag.status === 'Active' ? 'status-active' : 'status-inactive'}`}><i></i>{tag.status}</span></div><p>{tag.profile} · Updated {tag.updated}</p><a className="profile-url" href={`/t/${tag.public_token}`} target="_blank" rel="noreferrer">{window.location.host}/t/{tag.public_token} ↗</a></div></div><div className="tag-row-actions"><button title="QR code display is not configured yet" disabled>{icons.qr}</button><Link to={`/dashboard/profiles/${tag.profile_id}`} title="Edit profile">{icons.edit}</Link><button className="deactivate-button" onClick={onToggle}>{tag.status === 'Active' ? 'Deactivate' : 'Reactivate'}</button></div></div>; }
+function TagRow({ tag, onToggle, onUnregister, unregistering }) { return <div className={`tag-row-card ${tag.status !== 'Active' ? 'is-inactive' : ''}`}><div className="tag-row-main"><div className="mini-tag"><span>)))</span></div><div><div className="tag-row-title"><h2>{tag.name}</h2><span className={`status ${tag.status === 'Active' ? 'status-active' : 'status-inactive'}`}><i></i>{tag.status}</span></div><p>{tag.profile} · Updated {tag.updated}</p><a className="profile-url" href={`/t/${tag.public_token}`} target="_blank" rel="noreferrer">{window.location.host}/t/{tag.public_token} ↗</a></div></div><div className="tag-row-actions"><button title="QR code display is not configured yet" disabled>{icons.qr}</button><Link to={`/dashboard/profiles/${tag.profile_id}`} title="Edit profile">{icons.edit}</Link><button className="deactivate-button" onClick={onToggle}>{tag.status === 'Active' ? 'Deactivate' : 'Reactivate'}</button><button className="unregister-button" onClick={onUnregister} disabled={unregistering}>{unregistering ? 'Unregistering…' : 'Unregister'}</button></div></div>; }
 
 function AdminLink() {
   const { user } = useAuth(); const [allowed, setAllowed] = useState(false);
@@ -218,8 +228,8 @@ function drawManualCode(ctx, code, offsetX) {
   ctx.save();
   const instructionText = `this code - ${code}`;
   const instructionFont = '500 42px Arial, sans-serif';
-  const instructionCenterX = 2565 + offsetX;
-  const instructionCenterY = 3075;
+  const instructionCenterX = 2525 + offsetX;
+  const instructionCenterY = 2870;
   ctx.font = instructionFont;
   const instructionWidth = ctx.measureText(instructionText).width;
   const maskWidth = Math.max(760, instructionWidth + 24);
@@ -236,8 +246,9 @@ function drawManualCode(ctx, code, offsetX) {
 
   ctx.save();
   ctx.fillStyle = '#fff';
-  ctx.fillRect(2338 + offsetX, 3685, 234, 38);
-  ctx.translate(2455 + offsetX, 3704);
+  const phoneAdjustment = offsetX ? -10 : 0;
+  ctx.fillRect(2395 + offsetX + phoneAdjustment, 3584, 240, 32);
+  ctx.translate(2525 + offsetX + phoneAdjustment, 3598);
   ctx.rotate(Math.PI);
   ctx.fillStyle = '#111';
   ctx.font = '700 23px Arial, sans-serif';

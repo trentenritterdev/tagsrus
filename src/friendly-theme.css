@@ -216,6 +216,7 @@ select option:hover { color: #3c2850; background: #f2eaf6; }
 .status-inactive i { background: #df6675; }
 .tag-row-actions > button, .tag-row-actions > a { color: #635b6b; }
 .deactivate-button { color: #ba5062; }
+.unregister-button { color: #8f3d68 !important; }
 .add-card { color: #544d5c; border-color: #d9d0de; background: #fff; }
 .add-card > span { color: #d74491; background: #fff0f6; }
 .modal-icon { color: #187f75; background: #e4f5f1; }
