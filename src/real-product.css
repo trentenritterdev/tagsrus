@@ -3,8 +3,12 @@
   position: relative;
   overflow: hidden;
   border-radius: 30px;
-  background: #6e402d url('/emergency-tag-real.jpg') center / cover no-repeat;
-  box-shadow: 0 28px 42px rgba(42, 31, 21, 0.22);
+  background-color: #f3edf3;
+  background-image: url('/emergency-tag-product.png'), radial-gradient(circle at 50% 44%, #ffffff 0, #f8edf4 62%, #ede7f0 100%);
+  background-position: center, center;
+  background-size: contain, cover;
+  background-repeat: no-repeat;
+  box-shadow: 0 28px 42px rgba(74, 48, 72, 0.18);
   isolation: isolate;
 }
 
@@ -13,7 +17,15 @@
   height: 440px;
   transform: rotate(-3deg);
   animation: real-tag-float 7s ease-in-out infinite;
+  background-color: transparent;
+  background-image: url('/emergency-tag-product.png');
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  box-shadow: none;
 }
+
+.hero-visual .visual-glow { display: none; }
 
 .product-image .tag-scene {
   width: 245px;
@@ -21,37 +33,19 @@
   transform: rotate(-3deg);
   border-radius: 24px;
   animation: real-tag-float 7s ease-in-out infinite;
+  background-color: transparent;
+  background-image: url('/emergency-tag-product.png');
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  box-shadow: none;
 }
+
+.product-image { background: transparent; }
 
 .hero-visual .tag-scene > *,
 .product-image .tag-scene > * {
   display: none;
-}
-
-.hero-visual .tag-scene::before,
-.product-image .tag-scene::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.12), transparent 34%, rgba(30, 18, 12, 0.18));
-  pointer-events: none;
-}
-
-.hero-visual .tag-scene::after,
-.product-image .tag-scene::after {
-  content: '';
-  position: absolute;
-  z-index: 2;
-  top: -35%;
-  bottom: -35%;
-  left: -48%;
-  width: 28%;
-  transform: skewX(-18deg);
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.42), transparent);
-  mix-blend-mode: screen;
-  animation: real-tag-shine 6s ease-in-out infinite;
-  pointer-events: none;
 }
 
 @keyframes real-tag-float {
@@ -59,17 +53,9 @@
   50% { translate: 0 -10px; }
 }
 
-@keyframes real-tag-shine {
-  0%, 35% { left: -48%; opacity: 0; }
-  47% { opacity: 1; }
-  67%, 100% { left: 125%; opacity: 0; }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .hero-visual .tag-scene,
-  .product-image .tag-scene,
-  .hero-visual .tag-scene::after,
-  .product-image .tag-scene::after {
+  .product-image .tag-scene {
     animation: none;
   }
 }
