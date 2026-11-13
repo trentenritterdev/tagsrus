@@ -36,7 +36,7 @@ const features = [
 const defaultTag = { id: 'tag-aurora', name: 'Aurora’s backpack', profile: 'Aurora Bennett', status: 'Active', updated: 'Today, 9:42 AM', token: 'a7f3k2m9q1', contacts: 2 };
 
 function BrandMark() {
-  return <span className="logo-mark" aria-hidden="true"><i></i><i></i><i></i></span>;
+  return <img className="logo-mark" src="/tagsrus-mark.svg" alt="" aria-hidden="true" />;
 }
 
 function BrandName() {
@@ -163,7 +163,7 @@ function ResetPassword() {
   return <div className="auth-page"><Header /><Container className="auth-wrap"><div className="auth-card"><div className="auth-card-head"><div className="auth-mark">{icons.lock}</div><p className="eyebrow">Account recovery</p><h1>{recovery ? 'Choose a new password.' : 'Reset your password.'}</h1><p>{recovery ? 'Set a new password for your TagsRUs account.' : 'Enter your email and we’ll send a secure reset link.'}</p></div>{error && <div className="form-error" role="alert">{error}</div>}{sent ? <div className="notice">{icons.check}<span>Check your inbox for the reset link.</span></div> : <form onSubmit={submit}>{recovery ? <label>New password<input type="password" autoComplete="new-password" value={password} onChange={e => setPassword(e.target.value)} minLength="8" required /></label> : <label>Email address<input type="email" autoComplete="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" required /></label>}<button className="button button-full" disabled={busy}>{busy ? 'Please wait…' : recovery ? 'Save new password' : 'Send reset link'} {icons.arrow}</button></form>}<p className="auth-switch"><Link to="/login">← Back to login</Link></p></div><div className="auth-side"><TagMockup mini /><p className="eyebrow">Keep your account secure</p><h2>One less thing to worry about.</h2><p>Your account is the only place to edit the information connected to your tags.</p></div></Container></div>;
 }
 
-function Checkout() { const [qty, setQty] = useState(1); const navigate = useNavigate(); return <div className="checkout-page"><Header /><Container className="checkout-wrap"><div className="checkout-intro"><Link className="back-link" to="/">← Back to TagsRUs</Link><p className="eyebrow">The first step to peace of mind</p><h1>Get your Emergency Contact Tag.</h1><p>One simple tap gives the right people access to the information you choose to share.</p></div><div className="checkout-grid"><div className="product-card"><div className="product-image"><TagMockup mini /></div><div className="product-details"><span className="product-kicker">TagsRUs / 01</span><h2>Emergency Contact Tag</h2><p>Durable NFC tag with a secure, personal profile. Attach it to a backpack, mobility aid, keyring, or wherever it will be easy to find.</p><div className="product-points"><span>{icons.check} No app required</span><span>{icons.check} Update anytime</span><span>{icons.check} Privacy controls</span></div></div></div><div className="order-card"><h2>Your order</h2><div className="order-line"><span>Emergency Contact Tag</span><div className="quantity"><button onClick={() => setQty(Math.max(1, qty - 1))}>−</button><span>{qty}</span><button onClick={() => setQty(qty + 1)}>+</button></div></div><div className="order-total"><span>Total</span><strong>Configure price</strong></div><p className="checkout-note">Secure checkout will be connected to your configured payment provider. You’ll create or log in to your TagsRUs account before completing setup.</p><button className="button button-full" onClick={() => navigate('/signup')}>Continue to account {icons.arrow}</button><p className="checkout-legal">By continuing, you agree to our <Link to="/terms">Terms</Link> and <Link to="/privacy">Privacy Policy</Link>.</p></div></div></Container><Footer /></div>; }
+function Checkout() { const [qty, setQty] = useState(1); const navigate = useNavigate(); return <div className="checkout-page"><Header /><Container className="checkout-wrap"><div className="checkout-intro"><Link className="back-link" to="/">← Back to TagsRUs</Link><p className="eyebrow">The first step to peace of mind</p><h1>Get your Emergency Contact Tag.</h1><p>One simple tap gives the right people access to the information you choose to share.</p></div><div className="checkout-grid"><div className="product-card"><div className="product-image"><TagMockup mini /></div><div className="product-details"><span className="product-kicker">TagsRUs / 01</span><h2>Emergency Contact Tag</h2><p>Durable NFC tag with a secure, personal profile. Attach it to a backpack, mobility aid, keyring, or wherever it will be easy to find.</p><div className="product-points"><span>{icons.check} No app required</span><span>{icons.check} Update anytime</span><span>{icons.check} Privacy controls</span></div></div></div><div className="order-card"><h2>Your order</h2><div className="order-line"><span>Emergency Contact Tag</span><div className="quantity"><button onClick={() => setQty(Math.max(1, qty - 1))}>−</button><span>{qty}</span><button onClick={() => setQty(qty + 1)}>+</button></div></div><div className="order-total"><span>Total</span><strong>$12.99</strong></div><p className="checkout-note">Secure checkout will be connected to your configured payment provider. You’ll create or log in to your TagsRUs account before completing setup.</p><button className="button button-full" onClick={() => navigate('/signup')}>Continue to account {icons.arrow}</button><p className="checkout-legal">By continuing, you agree to our <Link to="/terms">Terms</Link> and <Link to="/privacy">Privacy Policy</Link>.</p></div></div></Container><Footer /></div>; }
 
 function Dashboard() {
   const { user } = useAuth(); const navigate = useNavigate();
@@ -212,17 +212,128 @@ function generateTagCode() {
   return `TR-${body.slice(0, 4)}-${body.slice(4)}`;
 }
 
+const MANUAL_TEMPLATE = { width: 6600, height: 5100, sourceWidth: 5100, sourceHeight: 6600, manualOffsets: [0, 3300] };
+
+function drawManualCode(ctx, code, offsetX) {
+  ctx.save();
+  const instructionText = `this code - ${code}`;
+  const instructionFont = '500 42px Arial, sans-serif';
+  const instructionCenterX = 2565 + offsetX;
+  const instructionCenterY = 3075;
+  ctx.font = instructionFont;
+  const instructionWidth = ctx.measureText(instructionText).width;
+  const maskWidth = Math.max(760, instructionWidth + 24);
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(instructionCenterX - maskWidth / 2, instructionCenterY - 29, maskWidth, 58);
+  ctx.translate(instructionCenterX, instructionCenterY);
+  ctx.rotate(Math.PI);
+  ctx.fillStyle = '#111';
+  ctx.font = instructionFont;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(`this code - ${code}`, 0, 0);
+  ctx.restore();
+
+  ctx.save();
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(2338 + offsetX, 3685, 234, 38);
+  ctx.translate(2455 + offsetX, 3704);
+  ctx.rotate(Math.PI);
+  ctx.fillStyle = '#111';
+  ctx.font = '700 23px Arial, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(code, 0, 0);
+  ctx.restore();
+}
+
+function createManualPdfBlob(canvas) {
+  const jpegData = canvas.toDataURL('image/jpeg', 0.96).split(',')[1];
+  const jpegBytes = Uint8Array.from(atob(jpegData), character => character.charCodeAt(0));
+  const encoder = new TextEncoder();
+  const chunks = [];
+  const offsets = [0];
+  let byteLength = 0;
+  function pushBytes(bytes) { chunks.push(bytes); byteLength += bytes.length; }
+  function pushText(value) { pushBytes(encoder.encode(value)); }
+  function startObject(number) { offsets[number] = byteLength; pushText(`${number} 0 obj\n`); }
+  function endObject() { pushText('endobj\n'); }
+
+  pushBytes(new Uint8Array([37, 80, 68, 70, 45, 49, 46, 52, 10, 37, 255, 255, 255, 255, 10]));
+  startObject(1); pushText('<< /Type /Catalog /Pages 2 0 R >>\n'); endObject();
+  startObject(2); pushText('<< /Type /Pages /Kids [3 0 R] /Count 1 >>\n'); endObject();
+  startObject(3); pushText('<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /XObject << /Im1 4 0 R >> >> /Contents 5 0 R >>\n'); endObject();
+  startObject(4); pushText(`<< /Type /XObject /Subtype /Image /Width ${MANUAL_TEMPLATE.sourceWidth} /Height ${MANUAL_TEMPLATE.sourceHeight} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${jpegBytes.length} >>\nstream\n`); pushBytes(jpegBytes); pushText('\nendstream\n'); endObject();
+  const content = 'q\n612 0 0 792 0 0 cm\n/Im1 Do\nQ\n';
+  startObject(5); pushText(`<< /Length ${encoder.encode(content).length} >>\nstream\n${content}endstream\n`); endObject();
+  const crossReferenceOffset = byteLength;
+  pushText('xref\n0 6\n0000000000 65535 f \n');
+  for (let number = 1; number <= 5; number += 1) pushText(`${String(offsets[number]).padStart(10, '0')} 00000 n \n`);
+  pushText(`trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n${crossReferenceOffset}\n%%EOF`);
+  return new Blob(chunks, { type: 'application/pdf' });
+}
+
+function renderManualSheet(codes) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => {
+      const sheet = document.createElement('canvas');
+      sheet.width = MANUAL_TEMPLATE.width;
+      sheet.height = MANUAL_TEMPLATE.height;
+      const sheetContext = sheet.getContext('2d');
+      sheetContext.translate(MANUAL_TEMPLATE.width, 0);
+      sheetContext.rotate(Math.PI / 2);
+      sheetContext.drawImage(image, 0, 0, MANUAL_TEMPLATE.sourceWidth, MANUAL_TEMPLATE.sourceHeight);
+      sheetContext.setTransform(1, 0, 0, 1, 0, 0);
+      codes.forEach((code, index) => drawManualCode(sheetContext, code, MANUAL_TEMPLATE.manualOffsets[index]));
+
+      const output = document.createElement('canvas');
+      output.width = MANUAL_TEMPLATE.sourceWidth;
+      output.height = MANUAL_TEMPLATE.sourceHeight;
+      const outputContext = output.getContext('2d');
+      outputContext.translate(0, output.height);
+      outputContext.rotate(-Math.PI / 2);
+      outputContext.drawImage(sheet, 0, 0);
+      output.toBlob(blob => {
+        if (!blob) { reject(new Error('The manual image could not be created.')); return; }
+        resolve({ previewUrl: URL.createObjectURL(blob), pdfUrl: URL.createObjectURL(createManualPdfBlob(output)) });
+      }, 'image/png');
+    };
+    image.onerror = () => reject(new Error('The manual template could not be loaded.'));
+    image.src = '/tags_manual.png';
+  });
+}
+
 function AdminTagCodes() {
   const { user } = useAuth(); const client = requireSupabase();
   const [name, setName] = useState('Emergency Contact Tag'); const [quantity, setQuantity] = useState('1');
   const [codes, setCodes] = useState([]); const [inventory, setInventory] = useState([]); const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true); const [error, setError] = useState(''); const [notice, setNotice] = useState('');
+  const [manualCodes, setManualCodes] = useState([]); const [manualPreview, setManualPreview] = useState(''); const [manualPdf, setManualPdf] = useState(''); const [manualBusy, setManualBusy] = useState(false); const [manualError, setManualError] = useState('');
+  useEffect(() => () => { if (manualPreview) URL.revokeObjectURL(manualPreview); if (manualPdf) URL.revokeObjectURL(manualPdf); }, [manualPreview, manualPdf]);
   async function loadInventory() {
     setLoading(true); const { data, error: listError } = await client.rpc('admin_list_tag_codes');
     if (listError) setError(readableError(listError)); else setInventory(data || []);
     setLoading(false);
   }
   useEffect(() => { loadInventory(); }, []);
+  async function generateManuals() {
+    setManualBusy(true); setManualError(''); setNotice('');
+    try {
+      const batch = Array.from({ length: 2 }, () => generateTagCode());
+      const { previewUrl, pdfUrl } = await renderManualSheet(batch);
+      setManualCodes(batch); setManualPreview(previewUrl); setManualPdf(pdfUrl); setNotice('Generated two local activation codes and placed one on each manual. Nothing was saved to Supabase.');
+    } catch (generationError) { setManualError(generationError.message || 'The manuals could not be generated.'); }
+    finally { setManualBusy(false); }
+  }
+  function downloadManuals() {
+    if (!manualPreview) return;
+    const anchor = document.createElement('a'); anchor.href = manualPreview; anchor.download = 'tagsrus-instruction-manuals.png'; anchor.click();
+  }
+  function downloadManualPdf() {
+    if (!manualPdf) return;
+    const anchor = document.createElement('a'); anchor.href = manualPdf; anchor.download = 'tagsrus-instruction-manuals.pdf'; anchor.click();
+  }
   async function createCodes(e) {
     e.preventDefault(); setBusy(true); setError(''); setNotice(''); setCodes([]);
     const batch = Array.from({ length: Number(quantity) }, () => generateTagCode());
@@ -239,7 +350,7 @@ function AdminTagCodes() {
     const anchor = document.createElement('a'); anchor.href = url; anchor.download = 'tagsrus-activation-codes.csv'; anchor.click(); URL.revokeObjectURL(url);
   }
   async function signOut() { await client.auth.signOut(); }
-  return <div className="dashboard-page"><div className="dashboard-nav"><Container><Logo /><div className="dashboard-nav-actions"><Link to="/dashboard">My tags</Link><span className="user-name">{user.email}</span><button className="text-link" onClick={signOut}>Sign out</button></div></Container></div><main><Container className="dashboard-main"><div className="dashboard-heading"><div><p className="eyebrow">Admin tools</p><h1>Tag inventory</h1><p>Create activation codes for physical TagsRUs products.</p></div></div>{error && <div className="form-error" role="alert">{error}</div>}{notice && <div className="notice" role="status">{icons.check}<span>{notice}</span></div>}<section className="admin-create-card"><h2>Create activation codes</h2><p>Codes are generated securely and only their hashes are stored in Supabase. Save the full codes after creation; they are shown only once.</p><form onSubmit={createCodes}><label>Tag name<input value={name} onChange={e => setName(e.target.value)} required maxLength="120" /></label><label>Number of codes<input type="number" min="1" max="100" value={quantity} onChange={e => setQuantity(e.target.value)} required /></label><button className="button" disabled={busy}>{busy ? 'Adding codes…' : 'Generate and add codes'} {icons.arrow}</button></form></section>{codes.length > 0 && <section className="admin-code-result"><div><h2>New codes</h2><button className="button button-small" onClick={downloadCodes}>Download CSV</button></div><ul>{codes.map(code => <li key={code}><code>{code}</code><button className="text-link" onClick={() => copyCode(code)}>Copy</button></li>)}</ul></section>}<section className="admin-inventory"><div className="admin-section-heading"><div><h2>Code inventory</h2><p>Only the last four characters are retained for identification.</p></div><button className="text-link" onClick={loadInventory}>Refresh</button></div>{loading ? <p>Loading inventory…</p> : inventory.length ? <div className="admin-code-list">{inventory.map((row, index) => <div className="admin-code-row" key={`${row.code_suffix}-${row.created_at}-${index}`}><div><strong>{row.tag_name}</strong><small>••••-{row.code_suffix || '????'} · Added {new Date(row.created_at).toLocaleDateString()}</small></div><span className={`status ${row.claimed ? 'status-active' : 'status-inactive'}`}><i></i>{row.claimed ? `Claimed ${new Date(row.claimed_at).toLocaleDateString()}` : 'Unclaimed'}</span></div>)}</div> : <p>No activation codes have been created yet.</p>}</section></Container></main></div>;
+  return <div className="dashboard-page"><div className="dashboard-nav"><Container><Logo /><div className="dashboard-nav-actions"><Link to="/dashboard">My tags</Link><span className="user-name">{user.email}</span><button className="text-link" onClick={signOut}>Sign out</button></div></Container></div><main><Container className="dashboard-main"><div className="dashboard-heading"><div><p className="eyebrow">Admin tools</p><h1>Tag inventory</h1><p>Create activation codes for physical TagsRUs products.</p></div></div>{error && <div className="form-error" role="alert">{error}</div>}{notice && <div className="notice" role="status">{icons.check}<span>{notice}</span></div>}<section className="manual-generator-card"><div className="admin-section-heading"><div><p className="eyebrow">Print preparation</p><h2>Generate instruction manuals</h2><p>Creates two local activation codes and places one on each manual in the supplied template. This tool does not write to Supabase.</p></div><button className="button" type="button" onClick={generateManuals} disabled={manualBusy}>{manualBusy ? 'Building manuals…' : 'Generate 2 manuals'} {icons.arrow}</button></div>{manualError && <div className="form-error" role="alert">{manualError}</div>}{manualCodes.length > 0 && <div className="manual-code-list"><div><strong>Manual 1</strong><code>{manualCodes[0]}</code><button className="text-link" type="button" onClick={() => copyCode(manualCodes[0])}>Copy</button></div><div><strong>Manual 2</strong><code>{manualCodes[1]}</code><button className="text-link" type="button" onClick={() => copyCode(manualCodes[1])}>Copy</button></div></div>}{manualPreview && <div className="manual-preview-wrap"><img className="manual-preview" src={manualPreview} alt="Generated TagsRUs instruction manuals with activation codes" /><div className="manual-download-actions"><button className="button button-small" type="button" onClick={downloadManuals}>Download manuals PNG</button><button className="button button-small" type="button" onClick={downloadManualPdf}>Download manuals PDF</button></div></div>}</section><section className="admin-create-card"><h2>Create activation codes</h2><p>Codes are generated securely and only their hashes are stored in Supabase. Save the full codes after creation; they are shown only once.</p><form onSubmit={createCodes}><label>Tag name<input value={name} onChange={e => setName(e.target.value)} required maxLength="120" /></label><label>Number of codes<input type="number" min="1" max="100" value={quantity} onChange={e => setQuantity(e.target.value)} required /></label><button className="button" disabled={busy}>{busy ? 'Adding codes…' : 'Generate and add codes'} {icons.arrow}</button></form></section>{codes.length > 0 && <section className="admin-code-result"><div><h2>New codes</h2><button className="button button-small" onClick={downloadCodes}>Download CSV</button></div><ul>{codes.map(code => <li key={code}><code>{code}</code><button className="text-link" onClick={() => copyCode(code)}>Copy</button></li>)}</ul></section>}<section className="admin-inventory"><div className="admin-section-heading"><div><h2>Code inventory</h2><p>Only the last four characters are retained for identification.</p></div><button className="text-link" onClick={loadInventory}>Refresh</button></div>{loading ? <p>Loading inventory…</p> : inventory.length ? <div className="admin-code-list">{inventory.map((row, index) => <div className="admin-code-row" key={`${row.code_suffix}-${row.created_at}-${index}`}><div><strong>{row.tag_name}</strong><small>••••-{row.code_suffix || '????'} · Added {new Date(row.created_at).toLocaleDateString()}</small></div><span className={`status ${row.claimed ? 'status-active' : 'status-inactive'}`}><i></i>{row.claimed ? `Claimed ${new Date(row.claimed_at).toLocaleDateString()}` : 'Unclaimed'}</span></div>)}</div> : <p>No activation codes have been created yet.</p>}</section></Container></main></div>;
 }
 
 function PublicProfile() {

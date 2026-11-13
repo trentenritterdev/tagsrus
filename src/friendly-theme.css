@@ -21,16 +21,12 @@ body, .site-header, .hero, .auth-page, .checkout-page, .dashboard-page, .legal-p
 .logo { color: var(--ink); }
 .logo > span:last-child > span { background: linear-gradient(135deg,#3fb9ac,#e658a0 62%,#f28a55); color: transparent; -webkit-background-clip: text; background-clip: text; }
 .logo-mark i, .logo-dark .logo-mark i { background: linear-gradient(180deg,#48c7b7,#e658a0 65%,#f28a55); }
-.logo { gap: 12px; font-family: 'DM Sans', sans-serif; }
-.logo-mark { width: 24px; height: 34px; gap: 2px; flex: 0 0 24px; align-items: center; }
-.logo-mark i { width: 4px; border-radius: 8px; }
-.logo-mark i:nth-child(1) { height: 12px; }
-.logo-mark i:nth-child(2) { height: 23px; }
-.logo-mark i:nth-child(3) { height: 34px; }
+.logo { gap: 12px; font-family: 'Space Grotesk', sans-serif; }
+.logo-mark { width: 16px; height: 34px; flex: 0 0 16px; display: block; object-fit: contain; }
 .brand-wordmark > span { background: linear-gradient(135deg,#3fb9ac,#e658a0 62%,#f28a55); color: transparent; -webkit-background-clip: text; background-clip: text; }
-.tag-wordmark { gap: 10px; font-family: 'DM Sans', sans-serif; }
+.tag-wordmark { gap: 10px; font-family: 'Space Grotesk', sans-serif; }
 .tag-wordmark .brand-wordmark { font-size: 21px; font-weight: 700; }
-.public-brand { display: flex; align-items: center; justify-content: center; gap: 12px; width: fit-content; margin: 0 auto 17px; color: var(--ink); font-family: 'DM Sans', sans-serif; font-size: 23px; font-weight: 700; letter-spacing: -1.1px; }
+.public-brand { display: flex; align-items: center; justify-content: center; gap: 12px; width: fit-content; margin: 0 auto 17px; color: var(--ink); font-family: 'Space Grotesk', sans-serif; font-size: 23px; font-weight: 700; letter-spacing: -1.1px; }
 .logo-dark { color: var(--ink); }
 .main-nav { color: #615a69; }
 .main-nav > a:not(.button):hover, .footer-links a:hover, .nav-login:hover { color: var(--violet); }
@@ -272,8 +268,23 @@ select option:hover { color: #3c2850; background: #f2eaf6; }
 .admin-code-result code { color: #187f75; }
 .admin-code-row strong { color: var(--ink); }
 .admin-code-row small { color: #716b7b; }
+.manual-generator-card { margin-top: 22px; padding: 25px; border: 1px solid #ebe3e9; border-radius: 20px; background: #fffdfd; }
+.manual-generator-card h2 { margin: 0 0 8px; color: var(--ink); font-family: 'Space Grotesk', sans-serif; }
+.manual-generator-card .admin-section-heading { align-items: flex-end; }
+.manual-generator-card .admin-section-heading > div { max-width: 680px; }
+.manual-generator-card .admin-section-heading p { margin: 0; }
+.manual-generator-card .admin-section-heading .eyebrow { margin-bottom: 9px; }
+.manual-code-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 22px; }
+.manual-code-list > div { display: flex; align-items: center; gap: 12px; padding: 13px 15px; border: 1px solid #ebe3e9; border-radius: 12px; background: #fffafc; }
+.manual-code-list strong { color: var(--ink); }
+.manual-code-list code { margin-left: auto; color: #187f75; font-size: 15px; font-weight: 700; letter-spacing: .7px; }
+.manual-preview-wrap { display: grid; justify-items: start; gap: 14px; margin-top: 22px; padding-top: 22px; border-top: 1px solid #ebe3e9; }
+.manual-preview { display: block; width: 100%; max-height: 560px; object-fit: contain; object-position: center; border: 1px solid #ebe3e9; border-radius: 12px; background: #fff; }
+.manual-download-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 
 @media (max-width: 760px) { .main-nav { color: var(--ink); background: #fff; border-color: #ebe3e9; box-shadow: 0 18px 25px rgba(65,46,66,.13); } }
+
+@media (max-width: 760px) { .manual-generator-card .admin-section-heading { align-items: flex-start; flex-direction: column; } .manual-code-list { grid-template-columns: 1fr; } .manual-code-list > div { flex-wrap: wrap; } .manual-code-list code { margin-left: 0; } }
 
 /* Added contrast and stronger type while keeping the warm, light palette. */
 :root {

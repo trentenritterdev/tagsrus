@@ -64,7 +64,7 @@
   <rect x="80" y="218" width="920" height="265" rx="26" fill="#fffdfd" stroke="#e8e0e9" filter="url(#shadow)"/>
   <text x="116" y="263" class="label muted">PRIMARY LOGO</text>
   <g transform="translate(145 307) scale(3)"><use href="#brandMark"/></g>
-  <text x="260" y="407" class="dm" font-size="76" font-weight="700" letter-spacing="-3.3">Tags<tspan fill="url(#wordGradient)">R</tspan>Us</text>
+  <text x="260" y="407" class="space" font-size="76" font-weight="700" letter-spacing="-3.3">Tags<tspan fill="url(#wordGradient)">R</tspan>Us</text>
   <text x="118" y="453" class="dm muted" font-size="15" font-weight="500">Use the full mark and wordmark together across the website and customer touchpoints.</text>
 
   <!-- Logo variants -->
@@ -72,10 +72,10 @@
   <text x="1066" y="263" class="label muted">LOGO VARIATIONS</text>
   <rect x="1065" y="284" width="420" height="82" rx="16" fill="#fffaf6" stroke="#ebe3e8"/>
   <g transform="translate(1090 305) scale(1.1)"><use href="#brandMark"/></g>
-  <text x="1145" y="339" class="dm" font-size="32" font-weight="700" letter-spacing="-1.5">Tags<tspan fill="url(#wordGradient)">R</tspan>Us</text>
+  <text x="1145" y="339" class="space" font-size="32" font-weight="700" letter-spacing="-1.5">Tags<tspan fill="url(#wordGradient)">R</tspan>Us</text>
   <rect x="1065" y="382" width="420" height="72" rx="16" fill="#282234"/>
   <g transform="translate(1092 398) scale(.95)"><use href="#brandMark"/></g>
-  <text x="1142" y="430" class="dm" font-size="30" font-weight="700" letter-spacing="-1.4" style="fill:#fffaf6">Tags<tspan fill="url(#wordGradient)">R</tspan>Us</text>
+  <text x="1142" y="430" class="space" font-size="30" font-weight="700" letter-spacing="-1.4" style="fill:#fffaf6">Tags<tspan fill="url(#wordGradient)">R</tspan>Us</text>
 
   <!-- Colors -->
   <rect x="80" y="515" width="920" height="328" rx="26" fill="#fffdfd" stroke="#e8e0e9" filter="url(#shadow)"/>
@@ -107,11 +107,11 @@
   <text x="1220" y="715" class="space" font-size="16" font-weight="700">Bold  700</text>
   <line x1="1066" y1="738" x2="1484" y2="738" stroke="#ebe3e8"/>
   <text x="1066" y="777" class="dm" font-size="25" font-weight="700" letter-spacing="-.6">DM Sans</text>
-  <text x="1225" y="777" class="dm muted" font-size="13" font-weight="500">Body copy, labels, and controls</text>
-  <text x="1066" y="813" class="dm" font-size="14" font-weight="400">Regular 400</text>
-  <text x="1200" y="813" class="dm" font-size="14" font-weight="500">Medium 500</text>
-  <text x="1335" y="813" class="dm" font-size="14" font-weight="600">Semibold 600</text>
-  <text x="1066" y="835" class="dm" font-size="13" font-weight="700">Bold 700</text>
+  <text x="1066" y="800" class="dm muted" font-size="13" font-weight="500">Body copy, labels, and controls</text>
+  <text x="1066" y="827" class="dm" font-size="14" font-weight="400">Regular 400</text>
+  <text x="1200" y="827" class="dm" font-size="14" font-weight="500">Medium 500</text>
+  <text x="1066" y="850" class="dm" font-size="14" font-weight="600">Semibold 600</text>
+  <text x="1200" y="850" class="dm" font-size="13" font-weight="700">Bold 700</text>
 
   <!-- Gradients -->
   <rect x="80" y="874" width="920" height="245" rx="26" fill="#fffdfd" stroke="#e8e0e9" filter="url(#shadow)"/>
